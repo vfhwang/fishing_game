@@ -4,7 +4,7 @@ bobSize = 10
 
 
 function Bob:new()
-    self.x= love.graphics.getPixelWidth()/2
+    self.x= windowWidth/2
     self.y= math.random(100,500)
 
 end
