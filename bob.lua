@@ -1,5 +1,7 @@
 Bob = Object:extend()
 
+bobSize = 10
+
 
 function Bob:new()
     self.x= love.graphics.getPixelWidth()/2
@@ -8,7 +10,7 @@ function Bob:new()
 end
 
 function Bob:update(dt)
-    if self.y > love.graphics.getPixelHeight()-50 then
+    if self.y > love.graphics.getPixelHeight()-50 - (speed*dt) then
         self.y = love.graphics.getPixelHeight()-50
     elseif self.y < 50 then
         self.y = 50
@@ -18,6 +20,6 @@ end
 end
 
 function Bob:draw()
-    love.graphics.circle("fill",self.x,self.y,5)
+    love.graphics.circle("fill",self.x,self.y,bobSize)
 
 end
