@@ -17,6 +17,8 @@ function love.load()
     require "catcher"
     catcher= Catcher()
 
+    require "didTheyCatchIt"
+
     -- Setting the initial speed of the bob
     speed = 1
     whenSpeedChanges = math.random(1,3)
@@ -24,7 +26,7 @@ function love.load()
     -- changing the bob speed and direction every second
     tick.recur(function() speed = math.random(-200,200) end ,  whenSpeedChanges)
 
-
+    fish = true
 
     love.graphics.setBackgroundColor( 26/255, 17/255, 105/255, 1 )
 
@@ -33,33 +35,39 @@ function love.load()
     timer = 0
     countdown = ""
 
+    --start the game
+    currentScreen = "menu"
+
 end
 
 
-function didTheyCatchIt(winning)
-    if winning then
-        timer = timer + 5
-        love.graphics.setBackgroundColor( 26/255, 17/255, 105/255, 1 )
-        else
-        timer = 0
-        love.graphics.setBackgroundColor( 143/255, 10/255, 48/255, 1 )
-        countdown = ""
+-- Menu
+function menuUpdate(dt)
+    function love.mousepressed(x, y)
+        print("clicked")
+        if x > 100 and y > 100 then
+            currentScreen="game"
         end
-    if timer > 300 and timer < 599 then
-        countdown = "3"
-    elseif timer > 600 and timer < 899 then
-        countdown = "2"
-    elseif timer > 899 and timer < 1199 then
-        countdown = "1"
-    elseif timer > 1200 then
-        countdown = "caught!"
-        love.graphics.setBackgroundColor( 0/255, 74/255, 54/255, 1 )
     end
-
 end
 
+function menuDraw(dt)
+    love.graphics.print("fishing game",100,150,0,1,1)
+    love.graphics.print("click to start",100,170,0,1,1)
+end
 
 function love.update(dt)
+    if currentScreen== "menu" then
+    menuUpdate(dt)
+    else
+    gameUpdate(dt)
+    end
+end
+
+-- Game
+function gameUpdate(dt)
+    -- if fish then
+
     tick.update(dt)
     bob:update(dt)
     catcher:update(dt)
@@ -71,37 +79,36 @@ function love.update(dt)
     winning = false
     else
     winning = true
-
     end
-
-
-    
     didTheyCatchIt(winning)
 
+    function love.mousepressed(x, y)
+        print(x)
+        if x < 100 and y < 100 then
+            currentScreen="menu"
+    end
+end
 end
 
-
-
-
-
-function love.draw()
+function gameDraw(dt)
 bob:draw()
 catcher:draw()
 
 love.graphics.setColor(255,255,255,255)
+love.graphics.print(countdown,100,150,0,1,1)
+end
 
-love.graphics.print(countdown,100,150,0,10,10)
 
+function love.draw()
+    if currentScreen == 'menu' then
+        menuDraw(dt)
+    else
+        gameDraw(dt)
+    end
 
 end
 
 
-
-function love.keypressed(key, unicode)
-    if key == "f" then love.window.setFullscreen(true, "desktop") end
-    if key == "escape" then love.window.setFullscreen(false, "desktop") end
-
-end
 
 
 

@@ -10,8 +10,7 @@ function Catcher:new()
 end
 
 function Catcher:update(dt)
-    if love.keyboard.isDown("space") then
-
+    if love.mouse.isDown(1) then
     if   self.y < 0 then
             self.y = 5
      else
