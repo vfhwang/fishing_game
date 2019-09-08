@@ -13,6 +13,9 @@ function didTheyCatchIt(winning)
         -- countdown = "caught!"
         -- love.graphics.setBackgroundColor( 0/255, 74/255, 54/255, 0.5 )
         fishCaught = fishCaught + 1
+        -- if fishCaught > maxScor then
+        --     score:saveMaxScore()
+        -- end
         resetGame()
 
     end

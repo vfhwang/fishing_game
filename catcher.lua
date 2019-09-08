@@ -1,6 +1,7 @@
 Catcher = Object:extend()
 
 catcherHeight = 169
+catcherSpeed = 0
 
 function Catcher:new()
     whitedot = love.graphics.newImage("img/whitedot.png")
@@ -12,19 +13,27 @@ end
 
 function Catcher:update(dt)
     if love.mouse.isDown(1) then
+
     if   self.y < 110 then
-            self.y = 110
+        self.y = 110
+        catcherSpeed = 0
      else
-        self.y = self.y - 5
+        self.y = self.y - 1 - catcherSpeed
+        catcherSpeed = catcherSpeed + 0.3
      end
     elseif 
     self.y > love.graphics.getPixelHeight()- catcherHeight - 100 - 5 then
     self.y = love.graphics.getPixelHeight()-catcherHeight - 100
+    catcherSpeed = 0
     else
-    self.y = self.y + 5
+        self.y = self.y + 1 - catcherSpeed
+        catcherSpeed = catcherSpeed - 0.2
     end
+
     self.top = self.y
     self.bottom = self.y + catcherHeight
+
+
 end
 
 
