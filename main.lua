@@ -28,10 +28,15 @@ function love.load()
     -- Setting the initial speed of the bob
     speed = 1
     whenSpeedChanges = math.random(1,3)
+    noFish = math.random(1,5)
+    fishAppears = math.random(1,2)
 
     -- changing the bob speed and direction every second
-    tick.recur(function() speed = math.random(-200,200) end ,  whenSpeedChanges)
+    tick.recur(function() speed = math.random(-200,200) end,  whenSpeedChanges)
 
+    tick.delay(function() fish = true 
+        tick.delay(function() fish = false end, fishAppears)
+end, noFish)
 
     --background
     love.graphics.setBackgroundColor( 1, 1, 1, 1 )
@@ -39,15 +44,27 @@ function love.load()
 
     --setting win conditions
     winning = true
-    timer = 0
+    timer = 100
     countdown = ""
 
     --start the game
     currentScreen = "menu"
 
-    -- remember to set these to false later!
-    fish = true
-    catch = true
+    fish = false
+    catching = false
+    fishCaught = 0 
+
+
+    --images
+    rod = love.graphics.newImage("img/rod.png")
+    gameTitle = love.graphics.newImage("img/gametitle.png")
+    water = love.graphics.newImage("img/water.png")
+    wiggle = love.graphics.newImage("img/wiggle.png")
+    bitmap = love.graphics.newImage("img/bitmap.png")
+    bigblob = love.graphics.newImage("img/bigblob.png")
+
+
+
 
 end
 
@@ -68,11 +85,9 @@ function menuUpdate(dt)
 end
 
 function menuDraw(dt)
-    gameTitle = love.graphics.newImage("img/gametitle.png")
     local scaleX, scaleY = getImageScaleForNewDimensions(gameTitle, 411, 300)
     love.graphics.draw(gameTitle,0,0,0,scaleX,scaleY)
 
-    water = love.graphics.newImage("img/water.png")
     local scaleX, scaleY = getImageScaleForNewDimensions(water, 411, 442)
     love.graphics.draw(water,0,windowHeight-442,0,scaleX,scaleY)    
 
@@ -90,15 +105,21 @@ end
 function gameUpdate(dt)
     tick.update(dt)
 
+
+
     if fish then
-
-
+        if love.mouse.isDown(1) then
+            catching = true
+             end
     end
 
-    if catch then
+    if catching then
+        fish = false
     bob:update(dt)
     catcher:update(dt)
     -- randomMovement(dt)
+
+
 
         if bob.y > catcher.bottom then
         winning = false
@@ -122,22 +143,35 @@ end
 
 function gameDraw(dt)
 
+    love.graphics.setColor( 0, 0, 0, 1 )
+    love.graphics.print("Fish caught: " .. fishCaught, 30, 30,0,3,3)
 
-
-    rod = love.graphics.newImage("img/rod.png")
     local scaleX, scaleY = getImageScaleForNewDimensions(rod, 252, 352)
-    love.graphics.draw(rod,0,windowHeight-442,windowWidth-rod:getWidth(),scaleX,scaleY)    
-print (windowWidth-rod:getWidth())
-print(scaleY)
+    love.graphics.draw(rod,windowWidth-rod:getWidth(),windowHeight-442,0,scaleX,scaleY)    
+
 
     if fish then
-
+        local scaleX, scaleY = getImageScaleForNewDimensions(wiggle, 185, 360)
+        love.graphics.draw(wiggle,windowWidth-rod:getWidth()-40,windowHeight-500+(math.random(-2,2)),0,scaleX,scaleY)   
 
     end
 
-    if catch then
-        bob:draw()
+    if catching then
+
+
+        love.graphics.setColor( 1, 0, 0, 1 )
+        love.graphics.rectangle("fill",0,0,windowWidth,windowHeight*timer/1200)
+
+        local scaleX, scaleY = getImageScaleForNewDimensions(bitmap, 412, 731)
+        love.graphics.draw(bitmap,0,0,0,scaleX,scaleY)   
+
+    
+        local scaleX, scaleY = getImageScaleForNewDimensions(bigblob, 252, 540)
+        love.graphics.draw(bigblob,windowWidth/2-bigblob:getWidth()/2,windowHeight/2-bigblob:getHeight()/2,0,scaleX,scaleY)   
+
         catcher:draw()
+        bob:draw()
+
 
         love.graphics.setColor(255,255,255,255)
         love.graphics.print(countdown,100,150,0,1,1)
@@ -146,7 +180,6 @@ end
 
 
 function love.draw()
-    -- love.graphics.draw(background,0,0,0,1,1)
     if currentScreen == 'menu' then
         menuDraw(dt)
     else
@@ -155,6 +188,15 @@ function love.draw()
 
 end
 
+function resetGame()
+    fish = false
+    catching = false
+    timer = 0
+
+    tick.delay(function() fish = true end, noFish)
+    love.graphics.setBackgroundColor( 1, 1, 1, 1 )
+
+end
 
 
 

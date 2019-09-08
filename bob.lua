@@ -10,16 +10,17 @@ function Bob:new()
 end
 
 function Bob:update(dt)
-    if self.y > love.graphics.getPixelHeight()-50 - (speed*dt) then
-        self.y = love.graphics.getPixelHeight()-50
-    elseif self.y < 50 then
-        self.y = 50
+    if self.y > love.graphics.getPixelHeight()- 120 - (speed*dt) then
+        self.y = love.graphics.getPixelHeight()- 120
+    elseif self.y < 140 then
+        self.y = 140
 else
     self.y = self.y + (speed*dt)
 end
 end
 
 function Bob:draw()
+    love.graphics.setColor( 1, 0, 0, 1 )
     love.graphics.circle("fill",self.x,self.y,bobSize)
 
 end
